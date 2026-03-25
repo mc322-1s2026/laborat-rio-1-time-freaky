@@ -35,11 +35,26 @@ public class LogProcessor {
                                 users.add(new User(p[1], p[2]));
                                 System.out.println("[LOG] Usuário criado: " + p[1]);
                             }
-                            case "CREATE_TASK" -> {
-                                Task t = new Task(p[1], LocalDate.parse(p[2]));
-                                workspace.addTask(t);
-                                System.out.println("[LOG] Tarefa criada: " + p[1]);
+                            case "CREATE_PROJECT" -> {
+                                Project proj = new Project(p[1], Integer.parseInt(p[2]));
+                                workspace.addProject(proj);
+                                System.out.println("[LOG] Projeto criado: " + p[1]);
                             }
+                            case "CREATE_TASK" -> {
+                                // CREATE_TASK;taskName;deadline;effort;projectName
+                                int effort = Integer.parseInt(p[3]);
+                                Task t = new Task(p[1], LocalDate.parse(p[2]), effort);
+                                
+                                workspace.addTask(t);
+                                
+                                Project proj = workspace.getProjectByName(p[4]);
+                                if (proj == null) {
+                                    throw new NexusValidationException("Projeto não encontrado para vincular a task: " + p[4]);
+                                }
+                                proj.addTask(t); 
+                                System.out.println("[LOG] Tarefa criada e vinculada ao projeto " + p[4] + ": " + p[1]);
+                            }
+
                             case "ASSIGN_USER" -> {
                                 Task t = workspace.getTaskById(Integer.parseInt(p[1]));
                                 User u = users.stream().filter(user -> user.consultUsername().equals(p[2])).findFirst().orElse(null);
