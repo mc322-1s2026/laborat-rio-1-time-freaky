@@ -10,7 +10,7 @@ public class Project {
     private final List<Task> tasks;
     private final int totalBudget;
 
-    public Project(String name, int totalBudget) {
+    public Project(String name, int totalBudget) { //cria projeto seguindo regras de negócio
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("O nome do projeto não pode ser vazio.");
         }
