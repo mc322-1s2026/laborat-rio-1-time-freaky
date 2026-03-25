@@ -17,21 +17,33 @@ public class Task {
     // Encapsulamento com 'final' garante que nunca serão modificados após a criação (sem setId)
     private final int id;
     private final LocalDate deadline;
+    private final int estimatedEffort;
     
     private String title;
     private TaskStatus status;
     private User owner;
 
+    /* Construtor auxiliar para o log_v1 funcionar */
     public Task(String title, LocalDate deadline) {
+        // Chama o construtor de baixo passando 0 como esforço padrão
+        this(title, deadline, 0); 
+    }
+
+    /* Construtor final */
+    public Task(String title, LocalDate deadline, int estimatedEffort) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("O título não pode ser vazio.");
         }
         if (deadline == null) {
             throw new IllegalArgumentException("O deadline não pode ser nulo.");
         }
+        if (estimatedEffort < 0) {
+            throw new IllegalArgumentException("O esforço estimado não pode ser negativo.");
+        }
         
         this.id = nextId++;
         this.deadline = deadline;
+        this.estimatedEffort = estimatedEffort;
         this.title = title;
         this.status = TaskStatus.TO_DO;
         
@@ -111,4 +123,5 @@ public class Task {
     public String getTitle() { return title; }
     public LocalDate getDeadline() { return deadline; }
     public User getOwner() { return owner; }
+    public int getEstimatedEffort() { return estimatedEffort; }
 }
