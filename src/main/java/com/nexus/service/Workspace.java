@@ -1,5 +1,6 @@
 package com.nexus.service;
 
+import com.nexus.model.Project;
 import com.nexus.model.Task;
 import com.nexus.model.TaskStatus;
 import com.nexus.model.User;
@@ -67,5 +68,34 @@ public class Workspace {
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
                 .orElse(null);
+    }
+
+    private final List<Project> projects = new ArrayList<>();
+
+    public void addProject(Project project) {
+        projects.add(project);
+    }
+
+    public Project getProjectByName(String name) {
+        return projects.stream()
+                .filter(p -> p.getName().equals(name))
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Project Health: Calcula o percentual de tarefas concluídas de um projeto.
+     */
+    public double getProjectHealth(String projectName) {
+        Project p = getProjectByName(projectName);
+        if (p == null || p.getTasks().isEmpty()) {
+            return 0.0;
+        }
+        
+        long doneTasks = p.getTasks().stream()
+                .filter(t -> t.getStatus() == TaskStatus.DONE)
+                .count();
+                
+        return ((double) doneTasks / p.getTasks().size()) * 100.0;
     }
 }
